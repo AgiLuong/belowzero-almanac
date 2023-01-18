@@ -1,6 +1,7 @@
 package com.example.almanac.database;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class DatabaseManager {
 
@@ -38,7 +39,7 @@ public class DatabaseManager {
                 CREATE TABLE Items (
                     ID INTEGER PRIMARY KEY,
                     ItemName VARCHAR(255) NOT NULL,
-                    IsPrimitive VARCHAR(255) NOT NULL
+                    IsRaw INTEGER NOT NULL
                     );""";
 
         String createTableRecipes = """
@@ -54,6 +55,21 @@ public class DatabaseManager {
             statement.execute(createTableRecipes);
             statement.close();
             connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void insertItem(String name, boolean isRaw) {
+        int raw = isRaw ? 1 : 0;
+        try {
+            String query = String.format(
+                    "INSERT INTO Items (ID, ItemName, IsPrimitive) VALUES (null, '%s', %d)",
+                    name, raw);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+            statement.close();
+            connection.commit();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
