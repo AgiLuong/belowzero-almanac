@@ -15,12 +15,27 @@ public class DatabaseManager {
         }
     }
 
+    private void checkConnected() {
+        try {
+            if (!connection.isClosed()) {
+                throw new IllegalStateException("error: already connected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void disconnect() {
         try {
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static void main(String[] args) {
+        DatabaseManager db = new DatabaseManager();
+        db.connect();
+        db.disconnect();
     }
 }
 
