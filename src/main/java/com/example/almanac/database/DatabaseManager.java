@@ -97,10 +97,10 @@ public class DatabaseManager {
     private void askRecipe(String name) {
         Scanner in = new Scanner(System.in);
         while (true) {
-            System.out.println("What does this item need? (Press q when done) ");
+            System.out.println("\nWhat does this item need? (Press q when done) ");
             String need = in.nextLine();
             if (Objects.equals(need, "q")) return;
-            System.out.print("How many? ");
+            System.out.println("How many? ");
             int quantity = Integer.parseInt(in.nextLine());
             addRecipeToDB(name, need, quantity);
         }
