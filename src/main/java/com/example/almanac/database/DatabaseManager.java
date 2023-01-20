@@ -80,22 +80,28 @@ public class DatabaseManager {
         System.out.print("\nItem name? (or press 'q' to quit) ");
         String name = in.nextLine();
         if (Objects.equals(name, "q")) return false;
-        System.out.print("1 if it's a raw material; 0 if not ");
+        int ID = -1;
+        try {
+            ID = getItemID(name);
+        } catch (RuntimeException ignored) {}
+        if (ID != -1) System.out.println("warning: item might have been added already");
+        System.out.print("1 if it's a raw material; 0 if not (or 2 to enter a new item) ");
         int raw = in.nextInt();
+        if (raw == 2) return true;
+        this.insertItem(name, raw);
         if (raw == 0) {
             askRecipe(name);
         }
-        this.insertItem(name, raw);
         return true;
     }
     private void askRecipe(String name) {
         Scanner in = new Scanner(System.in);
         while (true) {
-            System.out.print("\nWhat does this item need? (Press q when done) ");
+            System.out.println("What does this item need? (Press q when done) ");
             String need = in.nextLine();
-            if (Objects.equals(name, "q")) return;
-            System.out.print("\nHow many?");
-            int quantity = in.nextInt();
+            if (Objects.equals(need, "q")) return;
+            System.out.print("How many? ");
+            int quantity = Integer.parseInt(in.nextLine());
             addRecipeToDB(name, need, quantity);
         }
     }
@@ -117,7 +123,7 @@ public class DatabaseManager {
     private int getItemID(String name) {
         try {
             String query = String.format(
-                    "SELECT ID FROM Items WHERE ItemName='%s",
+                    "SELECT ID FROM Items WHERE ItemName='%s'",
                     name.replace("'", "''"));
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
