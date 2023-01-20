@@ -96,10 +96,40 @@ public class DatabaseManager {
             if (Objects.equals(name, "q")) return;
             System.out.print("\nHow many?");
             int quantity = in.nextInt();
-
+            addRecipeToDB(name, need, quantity);
         }
     }
+    private void addRecipeToDB(String name, String need, int quantity) {
+        int itemID = getItemID(name);
+        int neededItemID = getItemID(need);
+        try {
+            String query = String.format(
+                    "INSERT INTO Recipes (ID, ItemID, Need, Quantity) VALUES (null, %d, %d, %d)",
+                    itemID, neededItemID, quantity);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+            connection.commit();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private int getItemID(String name) {
+        try {
+            String query = String.format(
+                    "SELECT ID FROM Items WHERE ItemName='%s",
+                    name.replace("'", "''"));
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (!resultSet.next()) throw new RuntimeException("error: item " + name + " does not exist");
 
+            int ID = resultSet.getInt("ID");
+            statement.close();
+            return ID;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void main(String[] args) {
         DatabaseManager db = new DatabaseManager();
         db.connect();
