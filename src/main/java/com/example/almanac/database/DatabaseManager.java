@@ -46,9 +46,10 @@ public class DatabaseManager {
         String createTableRecipes = """
                 CREATE TABLE Recipes (
                     ID INTEGER PRIMARY KEY,
-                    ItemName VARCHAR(255) NOT NULL,
-                    Prerequisites INTEGER NOT NULL,
-                    FOREIGN KEY (Prerequisites) REFERENCES Items(ID) ON DELETE CASCADE
+                    ItemID INTEGER NOT NULL,
+                    Need INTEGER NOT NULL,
+                    Quantity INTEGER NOT NULL,
+                    FOREIGN KEY (ItemID) REFERENCES Items(ID) ON DELETE CASCADE
                     );""";
         try {
             Statement statement = connection.createStatement();
@@ -81,9 +82,24 @@ public class DatabaseManager {
         if (Objects.equals(name, "q")) return false;
         System.out.print("1 if it's a raw material; 0 if not ");
         int raw = in.nextInt();
+        if (raw == 0) {
+            askRecipe(name);
+        }
         this.insertItem(name, raw);
         return true;
     }
+    private void askRecipe(String name) {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            System.out.print("\nWhat does this item need? (Press q when done) ");
+            String need = in.nextLine();
+            if (Objects.equals(name, "q")) return;
+            System.out.print("\nHow many?");
+            int quantity = in.nextInt();
+
+        }
+    }
+
     public static void main(String[] args) {
         DatabaseManager db = new DatabaseManager();
         db.connect();
