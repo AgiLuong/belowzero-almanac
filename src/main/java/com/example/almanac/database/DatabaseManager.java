@@ -1,6 +1,7 @@
 package com.example.almanac.database;
 
 import java.sql.*;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class DatabaseManager {
@@ -8,7 +9,7 @@ public class DatabaseManager {
     Connection connection;
     public void connect() {
         if (connection != null) {
-            checkConnected();
+            isConnected();
         }
         try {
             Class.forName("org.sqlite.JDBC");
@@ -18,7 +19,7 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
-    private void checkConnected() {
+    private void isConnected() {
         try {
             if (!connection.isClosed()) {
                 throw new IllegalStateException("error: already connected.");
@@ -59,20 +60,41 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
-    public void insertItem(String name, boolean isRaw) {
-        int raw = isRaw ? 1 : 0;
+    public void insertItem(String name, int isRaw) {
         try {
             String query = String.format(
-                    "INSERT INTO Items (ID, ItemName, IsPrimitive) VALUES (null, '%s', %d)",
-                    name, raw);
+                    "INSERT INTO Items (ID, ItemName, IsRaw) VALUES (null, '%s', %d)",
+                    name.replace("'", "''"), isRaw);
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
-            statement.close();
             connection.commit();
+            statement.close();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public boolean scan() {
+        Scanner in = new Scanner(System.in);
+        System.out.print("\nItem name? (or press 'q' to quit) ");
+        String name = in.nextLine();
+        if (Objects.equals(name, "q")) return false;
+        System.out.print("1 if it's a raw material; 0 if not ");
+        int raw = in.nextInt();
+        this.insertItem(name, raw);
+        return true;
+    }
+    public static void main(String[] args) {
+        DatabaseManager db = new DatabaseManager();
+        db.connect();
+
+        boolean success;
+
+        do {
+            success = db.scan();
+        } while (success);
+
+        db.disconnect();
     }
 }
 

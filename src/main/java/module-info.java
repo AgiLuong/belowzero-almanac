@@ -10,6 +10,7 @@ module com.example.almanac {
 //    requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires org.xerial.sqlitejdbc;
 
     opens com.example.almanac to javafx.fxml;
     exports com.example.almanac;
