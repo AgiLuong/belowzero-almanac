@@ -85,10 +85,11 @@ public class DatabaseManager {
             ID = getItemID(name);
         } catch (RuntimeException ignored) {}
         if (ID != -1) System.out.println("warning: item might have been added already");
-        System.out.print("1 if it's a raw material; 0 if not (or 2 to enter a new item) ");
+        System.out.println("0 if it's not a raw material; 1 if it is; 2 to enter a new item ");
+
         int raw = in.nextInt();
         if (raw == 2) return true;
-        this.insertItem(name, raw);
+        if (ID == -1) this.insertItem(name, raw);
         if (raw == 0) {
             askRecipe(name);
         }
