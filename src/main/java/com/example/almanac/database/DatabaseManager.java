@@ -81,7 +81,7 @@ public class DatabaseManager {
         if (Objects.equals(name, "q")) return false;
         int ID = -1;
         try {
-            ID = getItemInfo(name).get(0);
+            ID = getItemID(name);
         } catch (RuntimeException ignored) {}
         if (ID != -1) System.out.println("warning: item might have been added already");
         System.out.println("0 if it's not a raw material; 1 if it is; 2 to enter a new item ");
@@ -106,8 +106,8 @@ public class DatabaseManager {
         }
     }
     private void addRecipeToDB(String name, String need, int quantity) {
-        int itemID = getItemInfo(name).get(0);
-        int neededItemID = getItemInfo(need).get(0);
+        int itemID = getItemID(name);
+        int neededItemID = getItemID(need);
         try {
             String query = String.format(
                     "INSERT INTO Recipes (ID, ItemID, Need, Quantity) VALUES (null, %d, %d, %d)",
@@ -120,22 +120,18 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
-    /** Return an ArrayList containing information about the given item name
-     *  Index 0 is the ID; index 1 is the raw status
-    **/
-    private ArrayList<Integer> getItemInfo(String name) {
+    private int getItemID(String name) {
         try {
             String query = String.format(
-                    "SELECT * FROM Items WHERE ItemName='%s'",
+                    "SELECT ID FROM Items WHERE ItemName='%s'",
                     name.replace("'", "''"));
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (!resultSet.next()) throw new RuntimeException("error: item " + name + " does not exist");
 
             int ID = resultSet.getInt("ID");
-            int isRaw = resultSet.getInt("IsRaw");
             statement.close();
-            return new ArrayList<>(Arrays.asList(ID, isRaw));
+            return ID;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
