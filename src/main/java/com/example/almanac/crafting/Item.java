@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Item {
     private String name;
-    private Boolean isRaw;
+    private boolean isRaw;
     private HashMap<Item, Integer> recipe;
 
     public Item(String name, boolean isRaw) {
@@ -25,7 +25,7 @@ public class Item {
     public void addRecipe(Item need, int quantity) {
         this.recipe.put(need, quantity);
     }
-    public Boolean getRaw() {
+    public boolean getRaw() {
         return isRaw;
     }
     public void setRaw(Boolean raw) {

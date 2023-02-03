@@ -3,10 +3,7 @@ package com.example.almanac.database;
 import com.example.almanac.crafting.Item;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class DatabaseManager {
     Connection connection;
@@ -143,18 +140,45 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
-    private String getItemName(int ID) {
+    @SuppressWarnings("unchecked")
+    private HashMap<String, Integer> getItemInfo(int ID) {
         try {
             String query = String.format(
-                    "SELECT ItemName FROM Items WHERE ID=%d",
+                    "SELECT * FROM Items WHERE ID=%d",
                     ID);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (!resultSet.next()) throw new RuntimeException("error: item does not exist");
 
             String name = resultSet.getString("ItemName");
+            int isRaw = resultSet.getInt("IsRaw");
             statement.close();
-            return name;
+            return (HashMap<String, Integer>) new HashMap<>().put(name, isRaw);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public Item getRecipe(int itemID) {
+        HashMap<String, Integer> itemInfo = getItemInfo(itemID);
+        String itemName = String.valueOf(itemInfo.keySet().stream().findFirst());
+        boolean isRaw = itemInfo.get(itemName) == 1;
+        Item item = new Item(itemName, isRaw);
+        if (isRaw) return item;
+
+        try {
+            String query = String.format(
+                    "SELECT * FROM Recipes WHERE ItemID=%d", itemID);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            do {
+                int componentID = resultSet.getInt("Need");
+                int quantity = resultSet.getInt("Quantity");
+                item.addRecipe(getRecipe(componentID), quantity);
+            } while (resultSet.next());
+
+            statement.close();
+            return item;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
