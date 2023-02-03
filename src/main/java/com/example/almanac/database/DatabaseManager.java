@@ -136,8 +136,7 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
-    @SuppressWarnings("unchecked")
-    private HashMap<String, Integer> getItemInfo(int ID) {
+    private List<String> getItemInfo(int ID) {
         try {
             String query = String.format(
                     "SELECT * FROM Items WHERE ID=%d",
@@ -149,7 +148,7 @@ public class DatabaseManager {
             String name = resultSet.getString("ItemName");
             int isRaw = resultSet.getInt("IsRaw");
             statement.close();
-            return (HashMap<String, Integer>) new HashMap<>().put(name, isRaw);
+            return Arrays.asList(name, Integer.toString(isRaw));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -158,9 +157,9 @@ public class DatabaseManager {
         return getRecipe(getItemID(itemName));
     }
     private Item getRecipe(int itemID) {
-        HashMap<String, Integer> itemInfo = getItemInfo(itemID);
-        String itemName = String.valueOf(itemInfo.keySet().stream().findFirst());
-        boolean isRaw = itemInfo.get(itemName) == 1;
+        List<String> itemInfo = getItemInfo(itemID);
+        String itemName = itemInfo.get(0);
+        boolean isRaw = Objects.equals(itemInfo.get(1), "1");
         Item item = new Item(itemName, isRaw);
         if (isRaw) return item;
 
