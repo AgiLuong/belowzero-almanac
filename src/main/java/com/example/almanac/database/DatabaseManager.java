@@ -154,7 +154,10 @@ public class DatabaseManager {
             throw new RuntimeException(e);
         }
     }
-    public Item getRecipe(int itemID) {
+    public Item getRecipe(String itemName) {
+        return getRecipe(getItemID(itemName));
+    }
+    private Item getRecipe(int itemID) {
         HashMap<String, Integer> itemInfo = getItemInfo(itemID);
         String itemName = String.valueOf(itemInfo.keySet().stream().findFirst());
         boolean isRaw = itemInfo.get(itemName) == 1;
