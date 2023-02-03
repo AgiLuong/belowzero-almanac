@@ -1,5 +1,7 @@
 package com.example.almanac.database;
 
+import com.example.almanac.crafting.Item;
+
 import java.sql.*;
 import java.util.Objects;
 import java.util.Scanner;
@@ -133,6 +135,22 @@ public class DatabaseManager {
             int ID = resultSet.getInt("ID");
             statement.close();
             return ID;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private String getItemName(int ID) {
+        try {
+            String query = String.format(
+                    "SELECT ItemName FROM Items WHERE ID=%d",
+                    ID);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (!resultSet.next()) throw new RuntimeException("error: item does not exist");
+
+            String name = resultSet.getString("ItemName");
+            statement.close();
+            return name;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
