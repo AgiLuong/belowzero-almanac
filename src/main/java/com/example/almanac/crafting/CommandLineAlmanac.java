@@ -35,7 +35,9 @@ public class CommandLineAlmanac {
         if (!item.getRaw()) {
             HashMap<Item, Integer> componentRecipe = item.getRecipe();
             for (Item component : componentRecipe.keySet()) {
-                System.out.println(spaces(level + 1) + " x " + component.getName());
+                System.out.print(spaces(level + 1) + "+ ");
+                System.out.print(componentRecipe.get(component));
+                System.out.println(" " + component.getName());
                 printRecipe(component, level + 1);
             }
         }
