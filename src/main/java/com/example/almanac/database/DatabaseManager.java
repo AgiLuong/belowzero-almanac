@@ -169,11 +169,11 @@ public class DatabaseManager {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
-            do {
-                int componentID = resultSet.getInt("Need");
-                int quantity = resultSet.getInt("Quantity");
-                item.addRecipe(getRecipe(componentID), quantity);
-            } while (resultSet.next());
+        while (resultSet.next()) {
+            int componentID = resultSet.getInt("Need");
+            int quantity = resultSet.getInt("Quantity");
+            item.addRecipe(getRecipe(componentID), quantity);
+        }
 
             statement.close();
             return item;
