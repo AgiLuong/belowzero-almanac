@@ -26,7 +26,6 @@ public class CommandLineAlmanac {
         for (int i=0; i<n; i++) space += "    ";
         return space;
     }
-    // System.out.println();
     private void printRecipe(Item item, int level) {
         if (level == 0) {
             if (item.getRaw()) System.out.println(item.getName() + " does not need a recipe.");
@@ -50,6 +49,30 @@ public class CommandLineAlmanac {
 
         Item target = retrieveItem(name);
         printRecipe(target, 0);
+    }
+    private String createString(Item item, int level) {
+        StringBuilder result = new StringBuilder();
+        if (level == 0) {
+            if (item.getRaw()) {
+                return item.getName() + " does not need a recipe.";
+            } else {
+                result.append(item.getName()).append(" needs:\n");
+            }
+        }
+        if (!item.getRaw()) {
+            HashMap<Item, Integer> componentRecipe = item.getRecipe();
+            for (Item component : componentRecipe.keySet()) {
+                result.append(spaces(level + 1)).append("+ ");
+                result.append(componentRecipe.get(component));
+                result.append(" ").append(component.getName()).append("\n");
+                result.append(createString(component, level + 1));
+            }
+        }
+        return result.toString();
+    }
+    public String getRecipeAsString(String itemName) {
+        Item item = retrieveItem(itemName);
+        return createString(item, 0);
     }
     public static void main(String[] args) {
         CommandLineAlmanac cla = new CommandLineAlmanac();

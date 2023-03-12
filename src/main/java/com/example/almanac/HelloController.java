@@ -11,7 +11,11 @@ public class HelloController {
     @FXML
     private TextField input;
     @FXML
+    private Label display;
+    @FXML
     public void myPrint(ActionEvent ae) {
-        System.out.println(input.getText());
+        String recipe = cla.getRecipeAsString(input.getText());
+        display.setText(recipe);
+        System.out.println("done!");
     }
 }

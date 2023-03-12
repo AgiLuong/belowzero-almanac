@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-
-<Pane fx:controller="com.example.almanac.HelloController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.almanac.HelloController">
    <children>
-      <TextField fx:id="input" onAction="#myPrint" layoutX="220.0" layoutY="38.0" />
+      <TextField fx:id="input" alignment="TOP_LEFT" layoutX="220.0" layoutY="38.0" onAction="#myPrint" />
+      <Label fx:id="display" alignment="TOP_CENTER" layoutX="114.0" layoutY="85.0" prefHeight="264.0" prefWidth="372.0" />
    </children>
 </Pane>
