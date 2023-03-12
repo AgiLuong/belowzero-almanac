@@ -16,9 +16,6 @@ public class Item {
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
     public HashMap<Item, Integer> getRecipe() {
         return recipe;
     }
@@ -27,11 +24,5 @@ public class Item {
     }
     public boolean getRaw() {
         return isRaw;
-    }
-    public void setRaw(Boolean raw) {
-        this.isRaw = raw;
-    }
-    public boolean equal(Item other) {
-        return Objects.equals(this.name, other.name);
     }
 }
