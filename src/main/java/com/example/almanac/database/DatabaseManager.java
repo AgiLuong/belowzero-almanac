@@ -122,14 +122,17 @@ public class DatabaseManager {
     }
     private int getItemID(String name) {
         try {
+            int ID;
             String query = String.format(
                     "SELECT ID FROM Items WHERE ItemName='%s'",
                     name.replace("'", "''"));
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-            if (!resultSet.next()) throw new RuntimeException("error: item " + name + " does not exist");
-
-            int ID = resultSet.getInt("ID");
+            if (!resultSet.next()) {
+                ID = -1;
+            } else {
+                ID = resultSet.getInt("ID");
+            }
             statement.close();
             return ID;
         } catch (SQLException e) {
@@ -154,7 +157,9 @@ public class DatabaseManager {
         }
     }
     public Item getRecipe(String itemName) {
-        return getRecipe(getItemID(itemName));
+        int itemID = getItemID(itemName);
+        if (itemID == -1) return null;
+        return getRecipe(itemID);
     }
     private Item getRecipe(int itemID) {
         List<String> itemInfo = getItemInfo(itemID);

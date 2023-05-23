@@ -18,7 +18,8 @@ public class CommandLineAlmanac {
         manager.connect();
         Item retrieved = manager.getRecipe(itemName);
         manager.disconnect();
-        this.items.add(retrieved);
+
+        if (retrieved != null) this.items.add(retrieved);
         return retrieved;
     }
     private String spaces(int n) {
@@ -72,6 +73,7 @@ public class CommandLineAlmanac {
     }
     public String getRecipeAsString(String itemName) {
         Item item = retrieveItem(itemName);
+        if (item == null) return "Item " + itemName + " does not exist.";
         return createString(item, 0);
     }
     public static void main(String[] args) {
