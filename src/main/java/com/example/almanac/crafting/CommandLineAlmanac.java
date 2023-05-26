@@ -71,8 +71,16 @@ public class CommandLineAlmanac {
         }
         return result.toString();
     }
+    private String sanitizeString(String input) {
+        String[] split = input.split(" ");
+        StringBuilder result = new StringBuilder();
+        for (String s : split) {
+            result.append(s.substring(0, 1).toUpperCase()).append(s.substring(1).toLowerCase()).append(" ");
+        }
+        return result.substring(0, input.length());
+    }
     public String getRecipeAsString(String itemName) {
-        Item item = retrieveItem(itemName);
+        Item item = retrieveItem(sanitizeString(itemName));
         if (item == null) return "Item " + itemName + " does not exist.";
         return createString(item, 0);
     }
